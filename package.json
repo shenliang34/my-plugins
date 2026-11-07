@@ -1,0 +1,13 @@
+{
+  "name": "pi-plugins",
+  "version": "1.0.0",
+  "description": "Personal pi coding agent plugins collection (extensions)",
+  "keywords": ["pi-package"],
+  "pi": {
+    "extensions": ["./extensions/*.ts"]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  }
+}
