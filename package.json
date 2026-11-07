@@ -1,7 +1,7 @@
 {
-  "name": "pi-plugins",
+  "name": "my-plugins",
   "version": "1.0.0",
-  "description": "Personal pi coding agent plugins collection (extensions)",
+  "description": "Personal plugins collection (extensions, tools, etc.)",
   "keywords": ["pi-package"],
   "pi": {
     "extensions": ["./extensions/*.ts"]

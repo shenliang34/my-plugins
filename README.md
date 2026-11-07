@@ -1,13 +1,13 @@
-# pi-plugins
+# my-plugins
 
-个人 pi coding agent 插件库，集中存放各类扩展。后续新插件直接往 `extensions/` 目录添加 `.ts` 文件即可。
+个人插件库，集中存放各类扩展/插件。后续新插件直接往 `extensions/` 目录添加 `.ts` 文件即可。
 
 ## 安装
 
 在目标电脑上执行（需已安装 pi 并登录对应服务）：
 
 ```bash
-pi install git:github.com/shenliang34/pi-plugins@main
+pi install git:github.com/shenliang34/my-plugins@main
 ```
 
 安装后输入 `/reload` 加载。
@@ -29,7 +29,7 @@ DeepSeek 账户余额查询 + 本次会话花费显示。
 ## 目录结构
 
 ```
-pi-plugins/
+my-plugins/
 ├── package.json          # pi 包清单，自动发现 extensions/*.ts
 ├── extensions/           # 所有扩展
 │   └── deepseek-balance.ts
