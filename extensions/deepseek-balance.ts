@@ -255,7 +255,10 @@ export default function deepseekBalance(pi: ExtensionAPI) {
               ? `${costStr} · DeepSeek 余额 ¥${balanceTotal}`
               : costStr;
 
-          const cwdPath = ctx.sessionManager.getCwd();
+          const cwdPath = formatCwd(
+            ctx.sessionManager.getCwd(),
+            process.env.HOME || process.env.USERPROFILE || "",
+          );
           const right3Width = visibleWidth(right3);
 
           let line3: string;
