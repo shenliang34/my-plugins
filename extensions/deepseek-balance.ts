@@ -169,15 +169,7 @@ export default function deepseekBalance(pi: ExtensionAPI) {
           const home = process.env.HOME || process.env.USERPROFILE || "";
           const cwdPath = formatCwd(ctx.sessionManager.getCwd(), home);
 
-          // 第 1 行：工作目录 + git 分支 + 会话名（左对齐，dim）
-          let pwd = cwdPath;
-          const branch = footerData.getGitBranch();
-          if (branch) pwd = `${pwd} (${branch})`;
-          const sessionName = ctx.sessionManager.getSessionName();
-          if (sessionName) pwd = `${pwd} • ${sessionName}`;
-          lines.push(truncateToWidth(theme.fg("dim", pwd), width, theme.fg("dim", "...")));
-
-          // 第 2 行：当前文件夹路径 + token/上下文统计（左）+ 模型名（右，dim）
+          // 第 1 行：token/上下文统计（左）+ 模型名（右，dim）
           const { totals, cacheHitRate } = computeTotals(ctx.sessionManager.getEntries());
           const statsParts: string[] = [];
           if (totals.input) statsParts.push(`↑${formatTokens(totals.input)}`);
@@ -202,7 +194,7 @@ export default function deepseekBalance(pi: ExtensionAPI) {
           else if ((percent ?? 0) > 70) contextStr = theme.fg("warning", contextStr);
           statsParts.push(contextStr);
 
-          let statsLeft = [cwdPath, ...statsParts].join(" ");
+          let statsLeft = statsParts.join(" ");
 
           // 右侧：模型名 + thinking level
           const modelName = ctx.model?.id || "no-model";
@@ -248,19 +240,27 @@ export default function deepseekBalance(pi: ExtensionAPI) {
           const dimRemainder = theme.fg("dim", remainder);
           lines.push(dimStatsLeft + dimRemainder);
 
-          // 第 3 行：本次会话花费 + 余额，右对齐 + dim（位于模型名下方）
+          // 第 2 行：当前文件夹路径（左）+ 本次花费/余额（右，右对齐 + dim）
           const costStr = `本次 $${totals.cost.toFixed(3)}`;
           const right3 =
             balanceTotal !== null
               ? `${costStr} · DeepSeek 余额 ¥${balanceTotal}`
               : costStr;
           const right3Width = visibleWidth(right3);
-          const dimRight3 = theme.fg("dim", right3);
+
+          let line2: string;
           if (right3Width >= width) {
-            lines.push(truncateToWidth(dimRight3, width, theme.fg("dim", "...")));
+            line2 = truncateToWidth(right3, width, "...");
           } else {
-            lines.push(" ".repeat(width - right3Width) + dimRight3);
+            const availForLeft = width - right3Width - 2;
+            const left2 =
+              availForLeft > 0 ? truncateToWidth(cwdPath, availForLeft, "...") : "";
+            const padding = " ".repeat(
+              Math.max(0, width - visibleWidth(left2) - right3Width),
+            );
+            line2 = left2 + padding + right3;
           }
+          lines.push(theme.fg("dim", line2));
 
           return lines;
         },
