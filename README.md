@@ -39,6 +39,32 @@ pi remove git:github.com/shenliang34/my-plugins@main
 
 ## 插件列表
 
+### feishu-bot
+
+把飞书消息桥接到本机 Pi Agent：在飞书单聊/群聊里发消息，Pi 在你指定的目录里读文件、写代码、跑命令，并把结果流式回复到飞书。
+
+- `/feishu start` 启动机器人（长连接 WebSocket，无需公网服务器/内网穿透）
+- `/feishu stop` 停止、`/feishu status` 查看状态、`/feishu setup` 查看配置步骤
+- 每个飞书会话一个独立 Pi 会话，按 (会话, 工作目录) 持久化，重启后可恢复上下文
+- 流式回复、长文本自动分片、工具调用进度提示、群聊 @ 机器人、消息去重/排队
+
+**配置凭据**（密钥不随仓库提交）：
+
+1. 复制 `extensions/feishu-bot/.env.example` 为 `~/.pi/agent/feishu-bot.env`
+2. 填写 `FEISHU_APP_ID` / `FEISHU_APP_SECRET`（飞书开放平台「开发者后台 → 凭证与基础信息」）
+3. 可选：`FEISHU_ALLOWED_DM_USERS` / `FEISHU_ALLOWED_GROUPS` 白名单、`PI_DEFAULT_CWD` 默认工作目录
+4. pi 里 `/reload`，然后 `/feishu start`
+
+创建应用可手动完成（详见扩展目录 `README` 或飞书开放平台），或运行：
+
+```bash
+npx tsx extensions/feishu-bot/register-app.ts
+```
+
+扫描二维码授权后自动创建应用并预填权限与事件订阅。
+
+在飞书里可用 `!help`、`!cd <目录>`、`!status`、`!reset`、`!stop` 等命令。
+
 ### deepseek-balance
 
 DeepSeek 账户余额查询 + 本次会话花费显示。
@@ -55,7 +81,13 @@ DeepSeek 账户余额查询 + 本次会话花费显示。
 my-plugins/
 ├── package.json          # pi 包清单，自动发现 extensions/*.ts
 ├── extensions/           # 所有扩展
-│   └── deepseek-balance.ts
+│   ├── deepseek-balance.ts
+│   └── feishu-bot/
+│       ├── index.ts      # /feishu start|stop|status|setup
+│       ├── config.ts     # 凭据/配置加载
+│       ├── pi-manager.ts # 每个飞书会话一个 Pi 会话
+│       ├── register-app.ts # 一键创建飞书应用（可选）
+│       └── .env.example
 ├── CHANGELOG.md
 └── README.md
 ```
