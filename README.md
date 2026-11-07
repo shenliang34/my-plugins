@@ -70,7 +70,7 @@ npx tsx extensions/feishu-bot/register-app.ts
 DeepSeek 账户余额查询 + 本次会话花费显示。
 
 - 底部状态栏（footer）在模型名下方右侧实时显示「本次会话花费 · 账户余额」
-- 底部状态栏左下角显示当前文件夹路径
+- 底部状态栏第二行（token 统计行）左侧显示当前文件夹路径
 - 每次对话结束自动刷新余额（HTTP 查询，不消耗 token）
 - 提供 `/balance` 命令手动查询余额详情
 
