@@ -248,16 +248,32 @@ export default function deepseekBalance(pi: ExtensionAPI) {
           const dimRemainder = theme.fg("dim", remainder);
           lines.push(dimStatsLeft + dimRemainder);
 
-          // 第 3 行：本次会话花费 + 余额，右对齐 + dim（位于模型名下方）
+          // 第 3 行：左下角当前文件夹路径 + 右侧本次花费/余额（右对齐 + dim）
           const costStr = `本次 $${totals.cost.toFixed(3)}`;
-          const right3 = balanceTotal !== null ? `${costStr} · DeepSeek 余额 ¥${balanceTotal}` : costStr;
+          const right3 =
+            balanceTotal !== null
+              ? `${costStr} · DeepSeek 余额 ¥${balanceTotal}`
+              : costStr;
+
+          const cwdPath = ctx.sessionManager.getCwd();
           const right3Width = visibleWidth(right3);
-          const dimRight3 = theme.fg("dim", right3);
+
+          let line3: string;
           if (right3Width >= width) {
-            lines.push(truncateToWidth(dimRight3, width, theme.fg("dim", "...")));
+            // 右侧本身已超宽：只显示右侧（截断）
+            line3 = truncateToWidth(right3, width, "...");
           } else {
-            lines.push(" ".repeat(width - right3Width) + dimRight3);
+            const availForLeft = width - right3Width - 2;
+            const left3 =
+              availForLeft > 0
+                ? truncateToWidth(cwdPath, availForLeft, "...")
+                : "";
+            const padding = " ".repeat(
+              Math.max(0, width - visibleWidth(left3) - right3Width),
+            );
+            line3 = left3 + padding + right3;
           }
+          lines.push(theme.fg("dim", line3));
 
           return lines;
         },
